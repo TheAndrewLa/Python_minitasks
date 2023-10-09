@@ -1,21 +1,23 @@
-def positive_number(n : int) -> int:
+def positive_number(n: int) -> int:
     counter = 0
+
     while n > 0:
         counter += n % 2
         n = (n - (n % 2)) // 2
 
     return counter
 
-def negative_number(n : int) -> int:
-    absolute_n = abs(n)
-    power = 8
 
-    while absolute_n >= (2 ** (power - 1)):
-        power *= 2
+def negative_number(n: int) -> int:
+    abs_n = abs(n)
+    power = 1
 
-    absolute_n = (2 ** (power - 1)) - absolute_n
+    while abs_n > ((2 ** power) - 1):
+        power += 1
 
-    return positive_number(absolute_n) + 1
+    mask = (2 ** power) - 1
+
+    return positive_number((abs_n ^ mask) + 1) + 1
 
 
 number = int(input('Enter a number: '))
