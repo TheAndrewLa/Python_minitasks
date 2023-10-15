@@ -1,17 +1,18 @@
+#!/bin/env python3
 # Two different variations again. The first one - is easier to read, the second - is shorter
 
 def create_matrix(exp: str) -> list:
     matrix = []
-    lines = [i.strip() for i in exp.split('|')]
+    lines = [i for i in exp.split('|')]
 
     for i in lines:
-        matrix.append([float(j) for j in i.split(' ')])
+        matrix.append([float(j) for j in i.split()])
 
     return matrix
 
 
 def create_matrix2(exp: str) -> list:
-    return [[float(j) for j in i.split(' ')] for i in [i.strip() for i in exp.split('|')]]
+    return [[float(j) for j in i.split()] for i in [i for i in exp.split('|')]]
 
 
 print(create_matrix("1 2 3 | 4 5 6 | 7 8 9"))

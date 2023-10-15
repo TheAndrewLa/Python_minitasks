@@ -1,3 +1,4 @@
+#!/bin/env python3
 import typing
 
 
@@ -11,11 +12,10 @@ def revert_dictionary(dictionary: dict) -> dict:
     for i in range(len(keys)):
         if not isinstance(values[i], typing.Hashable):
             raise TypeError
-        
-        if values[i] in new_keys:
+
+        try:
             new_values[new_keys.index(values[i])].append(keys[i])
-        
-        else:
+        except ValueError:
             new_values.append([keys[i]])
             new_keys.append(values[i])
 
