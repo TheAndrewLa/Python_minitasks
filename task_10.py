@@ -37,7 +37,7 @@ class LRUCache:
 
             self.__used += 1
 
-    def get(self, key, value):
+    def get(self, key):
         element = None
 
         for i in self.__elements:
