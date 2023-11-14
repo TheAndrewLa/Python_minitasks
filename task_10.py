@@ -1,52 +1,42 @@
-import functools
+from typing import Any
+from collections import namedtuple
 
 
 class LRUCache:
-    def __init__(self, capacity=16):
+    CacheElement = namedtuple('CacheElement', ['key', 'value'])
+
+    # Element are stored in array by the next rules:
+    # 1) Recently used element is at the top of list
+    # 2) Getting element moves element to the top of the list
+    # 3) Putting element inserts element to the top. And if we're out of capacity we'll remove last element
+    # 4) All keys in the elements list should be unique
+
+    def __init__(self, capacity: int = 16):
         self.__capacity = capacity
         self.__used = 0
+        self.__elements: list[LRUCache.CacheElement] = []
 
-        # Out element is a tuple (key, value, using_index)
-        # Last used element has (capacity - 1) index
-        # Oldest used element has (capacity - used) index
-        self.__elements = []
-
-        # Custom sort function (we'll sort our array after every get and put)
-        # After the sorting element with the highest index (last recent) will be first
-        self.__sorted = functools.partial(sorted, key=lambda x: x[2], reversed=True)
+        self.__keys: set = set([])
 
     def put(self, key, value):
+        tmp = self.__keys
+        tmp.add(key)
+
+        if len(tmp) == len(self.__keys):
+            return
+
         if self.__used == self.__capacity:
-            # Pushing our element to head of the list
-            # Remove last element (the oldest)
-            self.__elements.insert(0, (key, value, self.__capacity))
             self.__elements.pop(-1)
-
-            # Reducing the indices
-            # So index of the newest will be (capacity - 1) and of the oldest - zero
-            for i in self.__elements:
-                i[2] -= 1
-
         else:
-            self.__elements.insert(0, (key, value, self.__capacity))
-
-            # Reducing the indices
-            # So index of the newest will be (capacity - 1)
-            for i in self.__elements:
-                i[2] -= 1
-
             self.__used += 1
 
-    def get(self, key):
-        element = None
+        self.__elements.insert(0, LRUCache.CacheElement(key, value))
 
+    def get(self, key) -> Any:
         for i in self.__elements:
-            if i[0] != key:
-                i[2] -= 1
-            else:
-                i[2] = self.__capacity - 1
-                element = i
+            if i.key == key:
+                self.__elements.remove(i)
+                self.__elements.insert(0, i)
+                return i.value
 
-        self.__elements = self.__sorted(self.__elements)
-
-        return element[1]
+        return None
