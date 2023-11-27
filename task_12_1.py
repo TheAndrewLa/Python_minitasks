@@ -13,23 +13,8 @@ def take(seq, n):
 
 
 def cycle(itr: typing.Iterable) -> typing.Iterable:
-    class NewIterator:
-        def __init__(self, iterable: typing.Iterable):
-            self.__initial = iterable
-            self.__cur = iter(iterable)
-
-        def __next__(self):
-            try:
-                return next(self.__cur)
-
-            except StopIteration:
-                self.__cur = iter(self.__initial)
-                return next(self.__cur)
-
-        def __iter__(self):
-            return self
-
-    return NewIterator(itr)
+    while True:
+        yield from itr
 
 
 print(take(cycle([1, 2, 3]), 10))
